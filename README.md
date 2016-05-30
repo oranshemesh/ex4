@@ -6,7 +6,7 @@
 הקוד מורכב ממספר חלקים: 
 
 ### 1. התקנת החבילות
-'''r
+`````
 Needed <- c("tm", "SnowballCC", "RColorBrewer", "ggplot2", "wordcloud", "biclust", "cluster", "igraph", "fpc")
 install.packages(Needed, dependencies=TRUE)   
 install.packages('stringdist')
@@ -27,7 +27,7 @@ library(caret)
 library(Metrics)
 library(RecordLinkage)
 library(tm)   
-'''
+`````
 ### 2. טעינת ה-data
 קריאת קבצי csv. נשים לב כי עבור כל רשומה, קיים המידע הבא: פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש.
 train <- read.csv("train.csv", header=TRUE)
