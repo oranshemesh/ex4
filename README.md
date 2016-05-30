@@ -1,6 +1,6 @@
-﻿#מטלה "Crowdflower Search Results Relevance" competition
+﻿#"Crowdflower Search Results Relevance" competition
 
-כחלק מקורס יישום שיטות לניתוח נתונים, לקחנו חלק בתחרות Crowdflower Search Results Relevance, בה צריך לכתוב אלגוריתם, החוזה רלוונטיות התוצאות החוזרות עבור שאילתות חיפוש. 
+כחלק מקורס יישום שיטות לניתוח נתונים, לקחנו חלק בתחרות לדירוג רלוונטיות תוצאות חיפוש, בה צריך לכתוב אלגוריתם, החוזה רלוונטיות התוצאות החוזרות עבור שאילתות חיפוש. 
 בעזרת סט האימון שקבלנו (המכיל פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש) למדנו להעריך עד כמה המוצר רלוונטי לחיפוש.
 
 הקוד מורכב ממספר חלקים: 
@@ -28,8 +28,8 @@ library(Metrics)
 library(RecordLinkage)
 library(tm)   
 `````
-### 2. טעינת ה-data
-קריאת קבצי csv. נשים לב כי עבור כל רשומה, קיים המידע הבא: פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש.
+### 2. טעינת המידע
+קריאת קבצי נתונים. נשים לב כי עבור כל רשומה, קיים המידע הבא: פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש.
 `````
 train <- read.csv("train.csv", header=TRUE)
 test <- read.csv('test.csv',header = TRUE)
@@ -38,9 +38,9 @@ test <- read.csv('test.csv',header = TRUE)
 ### 3. ניקוי הנתונים וסידור הקלט.
 תהליך זה הורכב ממספר שלבים
 א. ניקוי הנתונים על ידי הסרת תגיות html  ו- &nbsp
-ב. הכנסת הנתונים ל-corpus
+ב. הכנסת הנתונים לקורפוס
 ג. הסרת פיסוק, הסרת מילים נפוצות ושינוי טקסט לאותיות קטנות
-מצורף דוגמא של הקוד המבצע זאת, אך תהליך זה בוצע עבור train ו-test ובכל אחד מהם, עבור פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש
+מצורף דוגמא של הקוד המבצע זאת, אך תהליך זה בוצע עבור אימון ו-בדיקה ובכל אחד מהם, עבור פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש
 `````
 #Clean data- remove html tags and &nbsp
 test$product_title <-  gsub("<.*?>", "", test$product_title) 
@@ -56,8 +56,8 @@ test$product_title=test_title_dataframe$text
 test$product_title=tolower(test$product_title)
 `````
 
-### 4. יצירת features
-הוספנו את הfeature-ים הבאים, תוך בחינת קשר בין כותרת מוצר לתיאור מוצר:
+### 4. יצירת תכונות
+הוספנו את התכונות הבאות, תוך בחינת קשר בין כותרת מוצר לתיאור מוצר:
 א. cosim 
 ב. qgram
 ג. levinshtein
@@ -160,7 +160,7 @@ test_data_features<-select(test,gram_query_description, gram_query_title, sim_qu
                    simjaccard_query_description, simjaccard_query_title)
 `````
 
-### 6. חזוי תוצאות עבור test על ידי אלגוריתם random Forest
+### 6. חזוי תוצאות עבור הבדיקה על ידי אלגוריתם random Forest
 `````
 fit <- randomForest(median_relevance~., data=train_data_features, importance=TRUE, ntree=2000)
 summary(fit)
