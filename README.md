@@ -30,9 +30,10 @@ library(tm)
 `````
 ### 2. טעינת ה-data
 קריאת קבצי csv. נשים לב כי עבור כל רשומה, קיים המידע הבא: פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש.
+`````
 train <- read.csv("train.csv", header=TRUE)
 test <- read.csv('test.csv',header = TRUE)
-
+`````
 
 ### 3. ניקוי הנתונים וסידור הקלט.
 תהליך זה הורכב ממספר שלבים
@@ -40,7 +41,7 @@ test <- read.csv('test.csv',header = TRUE)
 ב. הכנסת הנתונים ל-corpus
 ג. הסרת פיסוק, הסרת מילים נפוצות ושינוי טקסט לאותיות קטנות
 מצורף דוגמא של הקוד המבצע זאת, אך תהליך זה בוצע עבור train ו-test ובכל אחד מהם, עבור פרטי שאילתת חיפוש, כותרת וטקסט המתאר את המוצר שחזר כתוצאת חיפוש
-
+`````
 #Clean data- remove html tags and &nbsp
 test$product_title <-  gsub("<.*?>", "", test$product_title) 
 test$product_title <-  gsub("&nbsp;", " ", test$product_title)
@@ -53,7 +54,7 @@ Corpus <- tm_map(Corpus, removeWords, stopwords("english"))
 test_title_dataframe<-data.frame(text=unlist(sapply(Corpus, `[`, "content")), stringsAsFactors=F)
 test$product_title=test_title_dataframe$text
 test$product_title=tolower(test$product_title)
-
+`````
 
 ### 4. יצירת features
 הוספנו את הfeature-ים הבאים, תוך בחינת קשר בין כותרת מוצר לתיאור מוצר:
@@ -61,7 +62,7 @@ test$product_title=tolower(test$product_title)
 ב. qgram
 ג. levinshtein
 ד. jaccard
-
+`````
 #cosim feature between query to product_title and product_description
 for (i in 1:length(test$query)){
   if(test$product_title[i]!=""){
@@ -151,14 +152,16 @@ for (z in 1:length(test$query)){
     test$simjaccard_query_description[z] = 0
   }
 } 
-
+`````
 ### 5. סינון עמודות לא רלוונטיות
+`````
 test_data_features<-select(test,gram_query_description, gram_query_title, sim_query_description, sim_query_title,
                    simlv_query_description, dislv_query_description, simlv_query_title, dislv_query_title,
                    simjaccard_query_description, simjaccard_query_title)
-
+`````
 
 ### 6. חזוי תוצאות עבור test על ידי אלגוריתם random Forest
+`````
 fit <- randomForest(median_relevance~., data=train_data_features, importance=TRUE, ntree=2000)
 summary(fit)
 predictions <- predict(fit, test_data_features)
@@ -166,15 +169,4 @@ submit_data <- read.csv("test.csv", header=TRUE)
 submit_data <- select(submit_data,id)
 submit_data["prediction"] <- predictions
 write.csv(submit_data, file = "Submission1.csv")
-
-
-
-
-
-
-
-
-
-
-
-
+`````
